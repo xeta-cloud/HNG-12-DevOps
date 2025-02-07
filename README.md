@@ -54,14 +54,16 @@ json
     "message": "Invalid input: 'abc' is not a valid number."
 }
 🖥️ Step-by-Step Setup
+
 1️⃣ Clone Repository & Navigate
 git clone https://github.com/your-username/number-classification-api.git
 cd number-classification-api
-2️⃣ Create Virtual Environment (Recommended)
 
+2️⃣ Create Virtual Environment (Recommended)
 python -m venv venv
 source venv/bin/activate  # Mac/Linux
 venv\Scripts\activate  # Windows
+
 3️⃣ Install Dependencies
 pip install fastapi unicorn requests
 
@@ -73,21 +75,22 @@ Visit Swagger UI:
 http://127.0.0.1:8000/docs
 
 🌍 Step-by-Step Deployment on AWS EC2
+
 1️⃣ Launch an EC2 Instance
 Choose Ubuntu 22.04
 Open ports 80, 443, 22 in the security group
 SSH into the instance:
-
 ssh -i your-key.pem ubuntu@your-ec2-ip
-2️⃣ Install System Dependencies
 
+2️⃣ Install System Dependencies
 #Clone this repository and install dependencies
 sudo apt update && sudo apt install -y python3-pip nginx
 pip install fastapi uvicorn requests
+
 3️⃣ Deploy FastAPI with Uvicorn
 uvicorn main:app --host 0.0.0.0 --port 8000
-4️⃣ Configure Nginx as Reverse Proxy
 
+4️⃣ Configure Nginx as Reverse Proxy
 sudo nano /etc/nginx/sites-available/fastapi
 - Paste the following:
 server {
@@ -103,6 +106,7 @@ server {
 Activate Nginx Configuration:
 sudo ln -s /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled
 sudo systemctl restart nginx
+
 5️⃣ Keep API Running with screen
 screen -S fastapi
 uvicorn main:app --host 0.0.0.0 --port 8000
