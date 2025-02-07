@@ -7,7 +7,7 @@ app = FastAPI()
 # Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -15,7 +15,7 @@ app.add_middleware(
 
 def is_prime(n: int) -> bool:
     """Check if a number is prime."""
-    n = abs(n)  # Work with absolute values
+    n = abs(n)  
     if n < 2:
         return False
     for i in range(2, int(n ** 0.5) + 1):
@@ -37,10 +37,11 @@ def is_armstrong(n: int) -> bool:
 @app.get("/api/classify-number")
 async def classify_number(number: str = Query(..., description="Enter a number")):
     try:
-        # Validate input: Only numbers allowed (negative, decimal, and integer)
-        if not number.lstrip('-').replace('.', '', 1).isdigit():
-            raise ValueError
+        # **Strict Input Validation**
+        if not number.replace('.', '', 1).lstrip('-').isdigit():
+            raise ValueError  # This ensures letters like "abc" return 400
 
+        # Convert to number
         number = float(number)
         is_integer = number.is_integer()
         number = int(number) if is_integer else number  
@@ -48,7 +49,6 @@ async def classify_number(number: str = Query(..., description="Enter a number")
         properties = []
         
         if is_integer:
-            # Check even/odd
             properties.append("even" if number % 2 == 0 else "odd")
             if is_prime(number):
                 properties.append("prime")
@@ -57,10 +57,10 @@ async def classify_number(number: str = Query(..., description="Enter a number")
             if is_armstrong(number):
                 properties.append("armstrong")
 
-        # Calculate class sum (sum of absolute value digits)
+        # Calculate class sum
         class_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
 
-        # Fetch fun fact from Numbers API
+        # Fetch fun fact
         try:
             fun_fact = requests.get(f"http://numbersapi.com/{abs(number)}/math").text
         except requests.RequestException:
@@ -76,10 +76,7 @@ async def classify_number(number: str = Query(..., description="Enter a number")
         }
 
     except ValueError:
-        return HTTPException(
+        raise HTTPException(
             status_code=400,
-            detail={
-                "number": number,
-                "error": True
-            }
+            detail={"number": number, "error": True}
         )
