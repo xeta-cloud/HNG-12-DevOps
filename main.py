@@ -15,7 +15,7 @@ app.add_middleware(
 
 def is_prime(n: int) -> bool:
     """Check if the absolute value of a number is prime."""
-    n = abs(n)  # Consider absolute value for prime classification
+    n = abs(n)
     if n < 2:
         return False
     for i in range(2, int(n ** 0.5) + 1):
@@ -24,20 +24,23 @@ def is_prime(n: int) -> bool:
     return True
 
 def is_perfect(n: int) -> bool:
-    """Check if the number is a perfect number."""
-    n = abs(n)  # Consider absolute value for classification
+    """Check if the absolute value of a number is perfect."""
+    n = abs(n)
     return n > 0 and sum(i for i in range(1, n) if n % i == 0) == n
 
 def is_armstrong(n: int) -> bool:
-    """Check if the number is an Armstrong number."""
-    num_str = str(abs(n))  # Absolute value for classification
+    """Check if the absolute value of a number is an Armstrong number."""
+    num_str = str(abs(n))
     power = len(num_str)
     return sum(int(digit) ** power for digit in num_str) == abs(n)
 
 @app.get("/api/classify-number")
 async def classify_number(number: str = Query(..., description="Enter a number")):
     try:
-        # Convert input to float or int
+        # Ensure the input is a valid number
+        if not number.replace(".", "").replace("-", "").isdigit():
+            raise ValueError  # Force exception for invalid inputs
+
         number = float(number)
         is_integer = number.is_integer()
         number = int(number) if is_integer else number  
@@ -70,7 +73,7 @@ async def classify_number(number: str = Query(..., description="Enter a number")
         }
 
     except ValueError:
-        return HTTPException(
+        raise HTTPException(
             status_code=400,
             detail={
                 "number": number,
