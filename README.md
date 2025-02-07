@@ -58,7 +58,7 @@ json
 🖥️ Step-by-Step Setup
 
 1️⃣ Clone Repository & Navigate
-git clone https://github.com/your-username/number-classification-api.git
+git clone https://github.com/xeta-cloud/HNG-12-DevOps.git
 cd number-classification-api
 
 2️⃣ Create Virtual Environment (Recommended)
