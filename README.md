@@ -25,7 +25,7 @@ The **Number Classification API** takes a number as input and returns:
 
 ## 📌 API Endpoints  
 
-### **1️⃣ Classify a Number**  
+ **1️⃣ Classify a Number**  
 **Endpoint:**  
 ```http
 GET /api/classify-number?number={your_number}
@@ -43,6 +43,7 @@ Example Response (200 OK):
     "digit_sum": 11,
     "fun_fact": "371 is a narcissistic number."
 }
+
 2️⃣ Invalid Input Handling
 If a non-numeric input is provided, the API returns 400 Bad Request.
 Example Request:
