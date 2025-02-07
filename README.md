@@ -1,4 +1,4 @@
-# 🚀 Number Classification API
+# 🚀 Number Classification API (HNG12 STAGE 2 PROJECT CHALLENGE)
 
 ## 📖 Overview  
 The **Number Classification API** is a RESTful API that analyzes a given number and returns its mathematical properties, along with a fun fact. The API provides insights such as:  
@@ -23,16 +23,15 @@ This API is built using **FastAPI**, deployed on **AWS EC2**, and supports **COR
 
 ---
 
-## 🛠️ Tech Stack  
-
-| Technology       | Description                                  |
-|-----------------|----------------------------------------------|
-| **FastAPI**     | High-performance Python web framework       |
-| **Python**      | Backend programming language                |
-| **AWS EC2**     | Cloud hosting for deployment                |
-| **CORS**        | Handles cross-origin requests               |
-| **GitHub**      | Version control for codebase                |
-
+🛠️ Updated Tech Stack Table
+Technology	Description
+FastAPI	- High-performance Python web framework
+Python - Backend programming language
+Uvicorn	-ASGI server for running FastAPI applications
+Nginx -	Reverse proxy for handling traffic efficiently
+AWS EC2 - Cloud hosting for deployment
+CORS -	Handles cross-origin requests
+GitHub - Version control for codebase
 
 ---
 
@@ -60,35 +59,9 @@ Example Response (200 OK):
 json
 Copy
 Edit
-{
-    "number": 371,
-    "properties": {
-        "is_prime": false,
-        "is_perfect": false,
-        "is_armstrong": true,
-        "parity": "odd"
-    },
-    "digit_sum": 11,
-    "fun_fact": "371 is a narcissistic number."
-}
+
 2️⃣ Invalid Input Handling
 If a non-numeric input is provided, the API returns 400 Bad Request.
-
-Example Request:
-
-http
-Copy
-Edit
-GET /api/classify-number?number=abc
-Response (400 Bad Request):
-
-json
-Copy
-Edit
-{
-    "error": true,
-    "message": "Invalid input: 'abc' is not a valid number."
-}
 🖥️ Local Setup & Testing
 1️⃣ Clone Repository
 sh
