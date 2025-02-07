@@ -1,46 +1,27 @@
-# 🚀 Number Classification API (HNG12 STAGE 2 PROJECT CHALLENGE)
+# 🚀 Number Classification API
 
-## 📖 Overview  
-The **Number Classification API** is a RESTful API that analyzes a given number and returns its mathematical properties, along with a fun fact. The API provides insights such as:  
-✅ **Prime check**  
+## 📖 Features  
+The **Number Classification API** takes a number as input and returns:  
+✅ **Check if the number is Prime**  
 ✅ **Perfect number check**  
-✅ **Armstrong (Narcissistic) number check**  
-✅ **Even/Odd classification**  
-✅ **Digit sum calculation**  
-✅ **Math fun fact** from the Numbers API  
+✅ **Determines if the number is an Armstrong**  
+✅ **Classifies as Odd or Even**  
+✅ **Calculates the Sum of digits**  
+✅ **Retrieves a Math fun fact** (from [Numbers API](http://numbersapi.com))  
 
-This API is built using **FastAPI**, deployed on **AWS EC2**, and supports **CORS** for cross-origin access.
 
----
+## 🛠️ Tech Stack  
 
-## ⚡ API Features  
-✅ Accepts **GET** requests with a query parameter (`number`)  
-✅ Returns responses in **JSON format**  
-✅ Handles **CORS** (Cross-Origin Resource Sharing)  
-✅ Includes **error handling** for invalid inputs  
-✅ Fetches **math fun facts** from [Numbers API](http://numbersapi.com)  
-✅ Hosted on a **publicly accessible endpoint**  
-
----
-
-🛠️ Updated Tech Stack Table
-Technology	Description
-FastAPI	- High-performance Python web framework
-Python - Backend programming language
-Uvicorn	-ASGI server for running FastAPI applications
-Nginx -	Reverse proxy for handling traffic efficiently
-AWS EC2 - Cloud hosting for deployment
-CORS -	Handles cross-origin requests
-GitHub - Version control for codebase
+| Technology   | Description                                      |
+|-------------|--------------------------------------------------|
+| **FastAPI**  | Python-based web framework                      |
+| **Python**   | Backend programming language                    |
+| **Uvicorn**  | ASGI server for running FastAPI                 |
+| **Nginx**    | Reverse proxy for HTTP request handling              |
+| **AWS EC2**  | Cloud hosting for deployment                    |
+| **Requests** | Fetching data from external APIs (Numbers API)  |
 
 ---
-
-## 📌 API Endpoints  
-
-### **1️⃣ Classify a Number**  
-**Endpoint:**  
-```http
-GET /api/classify-number?number={your_number}
 
 ## 📌 API Endpoints  
 
@@ -49,78 +30,85 @@ GET /api/classify-number?number={your_number}
 ```http
 GET /api/classify-number?number={your_number}
 Example Request:
-
-http
-Copy
-Edit
-GET /api/classify-number?number=371
+http://44.203.73.184/api/classify-number?number=371
 Example Response (200 OK):
-
-json
-Copy
-Edit
-
+{
+    "number": 371,
+    "properties": {
+        "is_prime": false,
+        "is_perfect": false,
+        "is_armstrong": true,
+        "parity": "odd"
+    },
+    "digit_sum": 11,
+    "fun_fact": "371 is a narcissistic number."
+}
 2️⃣ Invalid Input Handling
 If a non-numeric input is provided, the API returns 400 Bad Request.
-🖥️ Local Setup & Testing
-1️⃣ Clone Repository
-sh
-Copy
-Edit
+Example Request:
+GET /api/classify-number?number=abc
+Response (400 Bad Request):
+json
+{
+    "error": true,
+    "message": "Invalid input: 'abc' is not a valid number."
+}
+🖥️ Step-by-Step Setup
+1️⃣ Clone Repository & Navigate
 git clone https://github.com/your-username/number-classification-api.git
 cd number-classification-api
-2️⃣ Create Virtual Environment (Optional but Recommended)
-sh
-Copy
-Edit
+2️⃣ Create Virtual Environment (Recommended)
+
 python -m venv venv
-source venv/bin/activate  # MacOS/Linux
+source venv/bin/activate  # Mac/Linux
 venv\Scripts\activate  # Windows
 3️⃣ Install Dependencies
-sh
-Copy
-Edit
-pip install -r requirements.txt
+pip install fastapi unicorn requests
+
 4️⃣ Run Locally
-sh
-Copy
-Edit
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
 5️⃣ Test API Locally
-Open your browser or Postman and visit:
+Visit Swagger UI:
 http://127.0.0.1:8000/docs
 
-🌍 Deployment to AWS EC2
+🌍 Step-by-Step Deployment on AWS EC2
 1️⃣ Launch an EC2 Instance
 Choose Ubuntu 22.04
-Configure Security Group to allow port 8000 (or 80 if using Nginx)
-SSH into your instance:
-sh
-Copy
-Edit
+Open ports 80, 443, 22 in the security group
+SSH into the instance:
+
 ssh -i your-key.pem ubuntu@your-ec2-ip
-2️⃣ Install Python & Dependencies
-sh
-Copy
-Edit
-sudo apt update && sudo apt install -y python3-pip
+2️⃣ Install System Dependencies
+
+#Clone this repository and install dependencies
+sudo apt update && sudo apt install -y python3-pip nginx
 pip install fastapi uvicorn requests
-3️⃣ Deploy the API on EC2
-sh
-Copy
-Edit
+3️⃣ Deploy FastAPI with Uvicorn
 uvicorn main:app --host 0.0.0.0 --port 8000
-4️⃣ Keep the API Running (Using screen or nohup)
-sh
-Copy
-Edit
-nohup uvicorn main:app --host 0.0.0.0 --port 8000 > output.log 2>&1 &
-5️⃣ Test Your Live API
-Visit:
+4️⃣ Configure Nginx as Reverse Proxy
 
-sh
-Copy
-Edit
-http://your-ec2-ip:8000/api/classify-number?number=371
+sudo nano /etc/nginx/sites-available/fastapi
+- Paste the following:
+server {
+    listen 80;
+    server_name your-ec2-ip;
 
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+Activate Nginx Configuration:
+sudo ln -s /etc/nginx/sites-available/fastapi /etc/nginx/sites-enabled
+sudo systemctl restart nginx
+5️⃣ Keep API Running with screen
+screen -S fastapi
+uvicorn main:app --host 0.0.0.0 --port 8000
+(Press Ctrl + A, then D to detach)
 
+🛠️ Testing Live Deployment
+Check if your API is running by visiting:
+
+http://44.203.73.184/api/classify-number?number=371
