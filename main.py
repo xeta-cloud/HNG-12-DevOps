@@ -40,7 +40,10 @@ async def classify_number(number: str = Query(..., description="Enter a number")
     if not number.replace('.', '', 1).lstrip('-').isdigit():
         raise HTTPException(
             status_code=400,
-            detail={"number": number, "error": True}
+            detail={
+                "number": number,  # ✅ Fix: Show exact invalid input
+                "error": True
+            }
         )
     
     # Convert to number
