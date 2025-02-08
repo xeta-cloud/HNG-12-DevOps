@@ -39,7 +39,10 @@ async def classify_number(number: str = Query(..., description="Enter a number")
     try:
         # **Strict Input Validation**
         if not number.replace('.', '', 1).lstrip('-').isdigit():
-            raise ValueError  # This ensures letters like "abc" return 400
+            raise HTTPException(
+                status_code=400,
+                detail={"number": number, "error": True}
+            )
 
         # Convert to number
         number = float(number)
@@ -57,8 +60,8 @@ async def classify_number(number: str = Query(..., description="Enter a number")
             if is_armstrong(number):
                 properties.append("armstrong")
 
-        # Calculate class sum
-        class_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
+        # **Calculate digit_sum** (sum of absolute digits)
+        digit_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
 
         # Fetch fun fact
         try:
@@ -71,7 +74,7 @@ async def classify_number(number: str = Query(..., description="Enter a number")
             "is_prime": is_prime(number) if is_integer else False,
             "is_perfect": is_perfect(number) if is_integer else False,
             "properties": properties,
-            "class_sum": class_sum,
+            "digit_sum": digit_sum,
             "fun_fact": fun_fact
         }
 
