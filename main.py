@@ -37,17 +37,18 @@ def is_armstrong(n: int) -> bool:
 @app.get("/api/classify-number")
 async def classify_number(number: str = Query(..., description="Enter a number")):
     # **Strict Input Validation**
-    if not number.replace('.', '', 1).lstrip('-').isdigit():
+    try:
+        number = float(number)
+    except ValueError:
         raise HTTPException(
             status_code=400,
-            detail={
-                "number": number,  # ✅ Fix: Show exact invalid input
+            detail={  
+                "number": number,  # ✅ **Fix: Ensure the exact invalid input appears**
                 "error": True
             }
         )
     
-    # Convert to number
-    number = float(number)
+    # Convert to int if it is a whole number
     is_integer = number.is_integer()
     number = int(number) if is_integer else number  
 
