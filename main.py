@@ -36,51 +36,43 @@ def is_armstrong(n: int) -> bool:
 
 @app.get("/api/classify-number")
 async def classify_number(number: str = Query(..., description="Enter a number")):
-    try:
-        # **Strict Input Validation**
-        if not number.replace('.', '', 1).lstrip('-').isdigit():
-            raise HTTPException(
-                status_code=400,
-                detail={"number": number, "error": True}
-            )
-
-        # Convert to number
-        number = float(number)
-        is_integer = number.is_integer()
-        number = int(number) if is_integer else number  
-
-        properties = []
-        
-        if is_integer:
-            properties.append("even" if number % 2 == 0 else "odd")
-            if is_prime(number):
-                properties.append("prime")
-            if is_perfect(number):
-                properties.append("perfect")
-            if is_armstrong(number):
-                properties.append("armstrong")
-
-        # **Calculate digit_sum** (sum of absolute digits)
-        digit_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
-
-        # Fetch fun fact
-        try:
-            fun_fact = requests.get(f"http://numbersapi.com/{abs(number)}/math").text
-        except requests.RequestException:
-            fun_fact = "Fun fact unavailable"
-
-        return {
-            "number": number,
-            "is_prime": is_prime(number) if is_integer else False,
-            "is_perfect": is_perfect(number) if is_integer else False,
-            "properties": properties,
-            "digit_sum": digit_sum,
-            "fun_fact": fun_fact
-        }
-
-    except ValueError:
-        # **Ensure invalid input is included in the response**
+    # **Strict Input Validation**
+    if not number.replace('.', '', 1).lstrip('-').isdigit():
         raise HTTPException(
             status_code=400,
             detail={"number": number, "error": True}
         )
+    
+    # Convert to number
+    number = float(number)
+    is_integer = number.is_integer()
+    number = int(number) if is_integer else number  
+
+    properties = []
+    
+    if is_integer:
+        properties.append("even" if number % 2 == 0 else "odd")
+        if is_prime(number):
+            properties.append("prime")
+        if is_perfect(number):
+            properties.append("perfect")
+        if is_armstrong(number):
+            properties.append("armstrong")
+
+    # **Calculate digit_sum** (sum of absolute digits)
+    digit_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
+
+    # Fetch fun fact
+    try:
+        fun_fact = requests.get(f"http://numbersapi.com/{abs(number)}/math").text
+    except requests.RequestException:
+        fun_fact = "Fun fact unavailable"
+
+    return {
+        "number": number,
+        "is_prime": is_prime(number) if is_integer else False,
+        "is_perfect": is_perfect(number) if is_integer else False,
+        "properties": properties,
+        "digit_sum": digit_sum,
+        "fun_fact": fun_fact
+    }
