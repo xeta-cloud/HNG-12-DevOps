@@ -38,9 +38,9 @@ def is_armstrong(n: int) -> bool:
 async def classify_number(number: str = Query(..., description="Enter a number")):
     # **Strict Input Validation**
     try:
-        number = float(number)
+        parsed_number = float(number)
     except ValueError:
-        raise HTTPException(
+        return HTTPException(
             status_code=400,
             detail={  
                 "number": number,  # ✅ **Fix: Ensure the exact invalid input appears**
@@ -49,33 +49,33 @@ async def classify_number(number: str = Query(..., description="Enter a number")
         )
     
     # Convert to int if it is a whole number
-    is_integer = number.is_integer()
-    number = int(number) if is_integer else number  
+    is_integer = parsed_number.is_integer()
+    parsed_number = int(parsed_number) if is_integer else parsed_number  
 
     properties = []
     
     if is_integer:
-        properties.append("even" if number % 2 == 0 else "odd")
-        if is_prime(number):
+        properties.append("even" if parsed_number % 2 == 0 else "odd")
+        if is_prime(parsed_number):
             properties.append("prime")
-        if is_perfect(number):
+        if is_perfect(parsed_number):
             properties.append("perfect")
-        if is_armstrong(number):
+        if is_armstrong(parsed_number):
             properties.append("armstrong")
 
     # **Calculate digit_sum** (sum of absolute digits)
-    digit_sum = sum(int(digit) for digit in str(abs(int(number))) if digit.isdigit())
+    digit_sum = sum(int(digit) for digit in str(abs(int(parsed_number))) if digit.isdigit())
 
     # Fetch fun fact
     try:
-        fun_fact = requests.get(f"http://numbersapi.com/{abs(number)}/math").text
+        fun_fact = requests.get(f"http://numbersapi.com/{abs(parsed_number)}/math").text
     except requests.RequestException:
         fun_fact = "Fun fact unavailable"
 
     return {
-        "number": number,
-        "is_prime": is_prime(number) if is_integer else False,
-        "is_perfect": is_perfect(number) if is_integer else False,
+        "number": parsed_number,
+        "is_prime": is_prime(parsed_number) if is_integer else False,
+        "is_perfect": is_perfect(parsed_number) if is_integer else False,
         "properties": properties,
         "digit_sum": digit_sum,
         "fun_fact": fun_fact
