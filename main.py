@@ -40,10 +40,11 @@ async def classify_number(number: str = Query(..., description="Enter a number")
     try:
         parsed_number = float(number)
     except ValueError:
-        return HTTPException(
+        # Invalid input, return 400 Bad Request with the invalid input
+        raise HTTPException(
             status_code=400,
             detail={  
-                "number": number,  # ✅ **Fix: Ensure the exact invalid input appears**
+                "number": number,  # Ensure the invalid input is included in the response
                 "error": True
             }
         )
