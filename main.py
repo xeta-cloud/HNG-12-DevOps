@@ -79,6 +79,7 @@ async def classify_number(number: str = Query(..., description="Enter a number")
         }
 
     except ValueError:
+        # **Ensure invalid input is included in the response**
         raise HTTPException(
             status_code=400,
             detail={"number": number, "error": True}
